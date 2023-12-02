@@ -1,4 +1,4 @@
-file = open("input.txt", 'r')
+file = open("2023/day2/input.txt", 'r')
 sum = 0
 while (True):
     line = file.readline()
