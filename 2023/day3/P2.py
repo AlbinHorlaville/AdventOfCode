@@ -30,78 +30,85 @@ def getNBRows(source: str):
     return nbRows
 
 def detourerNB(tab, i, j):
-    n = charToInt(tab[i*nbRows+j])
+    nStr = tab[i*nbRows+j]
     jbis = j-1
     # On récupère les chiffres de gauche
     if (jbis!=0):
-        while ('0'<=tab[i*nbRows+jbis] and tab[i*nbRows+jbis]<='9'):
-            n = charToInt(tab[i*nbRows+jbis])*10 + n
+        while (jbis>=0 and '0'<=tab[i*nbRows+jbis] and tab[i*nbRows+jbis]<='9'):
+            nStr = tab[i*nbRows+jbis] + nStr
             jbis-=1
     jbis = j+1
-    if (jbis!=nbRows-1):
+    if (jbis<=nbRows-1):
         while ('0'<=tab[i*nbRows+jbis] and tab[i*nbRows+jbis]<='9'):
-            n = n + charToInt(tab[i*nbRows+jbis])*10
+            nStr = nStr + tab[i*nbRows+jbis]
             jbis+=1
-    return n, jbis==(j+1)
+    return int(nStr), jbis==(j+1)
 
 # Analyse le pourtour du nombre pour trouver un symbole différent de "."
 def searchMul(tab:str, i:int, j:int):
     # case de gauche
     one = -1
     two = -1
-    checkIndex = False
+    checkIndexUP = False
     # case en haut à gauche
     if (i!=0 and j!=0 and '0'<=tab[(i-1)*nbRows+j-1] and tab[(i-1)*nbRows+j-1]<='9'):
-        one, checkIndex = detourerNB(tab, i-1, j-1)
+        one, checkIndexUP = detourerNB(tab, i-1, j-1)
     # case en haut
     if (one==-1 and j!=0 and '0'<=tab[(i-1)*nbRows+j] and tab[(i-1)*nbRows+j]<='9'):
-        one, checkIndex = detourerNB(tab, i-1, j)
+        one, checkIndexUP = detourerNB(tab, i-1, j)
     # case en haut à droite
-    if (checkIndex and i!=0 and j!=(nbRows-1) and '0'<=tab[(i-1)*nbRows+j+1] and tab[(i-1)*nbRows+j+1]<='9'):
+    if ((checkIndexUP or one==-1) and i!=0 and j!=(nbRows-1) and '0'<=tab[(i-1)*nbRows+j+1] and tab[(i-1)*nbRows+j+1]<='9'):
         if one==-1:
-            one, checkIndex = detourerNB(tab, i-1, j+1)
+            one, checkIndexUP = detourerNB(tab, i-1, j+1)
         else:
-            two, checkIndex = detourerNB(tab, i-1, j+1)
+            two, checkIndexUP = detourerNB(tab, i-1, j+1)
     # case à gauche
     if (j!=0 and '0'<=tab[i*nbRows+j-1] and tab[i*nbRows+j-1]<='9'):
         if (one!=-1 and two!=-1):
             return 0
         if one==-1:
-            one, checkIndex = detourerNB(tab, i, j-1)
+            one, checkIndexUP = detourerNB(tab, i, j-1)
         else:
-            two, checkIndex = detourerNB(tab, i, j-1)
+            two, checkIndexUP = detourerNB(tab, i, j-1)
     # case à droite
     if (j!=(nbRows-1) and '0'<=tab[i*nbRows+j+1] and tab[i*nbRows+j+1]<='9'):
         if (one!=-1 and two!=-1):
             return 0
         if one==-1:
-            one, checkIndex = detourerNB(tab, i, j+1)
+            one, checkIndexUP = detourerNB(tab, i, j+1)
         else:
-            two, checkIndex = detourerNB(tab, i, j+1)
+            two, checkIndexUP = detourerNB(tab, i, j+1)
+    checkIndexDOWN = False
+    cid = False
     # case en bas à gauche
     if (i!=(nbLines-1) and j!=0 and '0'<=tab[(i+1)*nbRows+j-1] and tab[(i+1)*nbRows+j-1]<='9'):
         if (one!=-1 and two!=-1):
             return 0
         if one==-1:
-            one, checkIndex = detourerNB(tab, i+1, j-1)
+            one, checkIndexDOWN = detourerNB(tab, i+1, j-1)
         else:
-            two, checkIndex = detourerNB(tab, i+1, j-1)
+            two, checkIndexDOWN = detourerNB(tab, i+1, j-1)
+    else:
+        cid = True
+        checkIndexDOWN = True
     # case en bas
-    if (i!=(nbLines-1) and '0'<=tab[(i+1)*nbRows+j] and tab[(i+1)*nbRows+j]<='9'):
+    if (cid and i!=(nbLines-1) and '0'<=tab[(i+1)*nbRows+j] and tab[(i+1)*nbRows+j]<='9'):
         if (one!=-1 and two!=-1):
             return 0
         if one==-1:
-            one, checkIndex = detourerNB(tab, i+1, j)
+            one, checkIndexDOWN = detourerNB(tab, i+1, j)
         else:
-            two, checkIndex = detourerNB(tab, i+1, j)
+            two, checkIndexDOWN = detourerNB(tab, i+1, j)
     # case en bas à droite
-    if (i!=(nbLines-1) and j!=(nbRows-1) and '0'<=tab[(i+1)*nbRows+j+1] and tab[(i+1)*nbRows+j+1]<='9'):
+    if (checkIndexDOWN and i!=(nbLines-1) and j!=(nbRows-1) and '0'<=tab[(i+1)*nbRows+j+1] and tab[(i+1)*nbRows+j+1]<='9'):
         if (one!=-1 and two!=-1):
             return 0
         if one==-1:
-            one, checkIndex = detourerNB(tab, i+1, j+1)
+            one, checkIndexDOWN = detourerNB(tab, i+1, j+1)
         else:
-            two, checkIndex = detourerNB(tab, i+1, j+1)
+            two, checkIndexDOWN = detourerNB(tab, i+1, j+1)
+    if (one==-1): one = 0
+    if (two==-1): two = 0
     return one*two
 
 def charToInt(src:str):
