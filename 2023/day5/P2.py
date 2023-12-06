@@ -23,16 +23,20 @@ def checkAlreadyDid(alreadyDid, n):
 def checkAlreadyDidInterval(alreadyDid, start, end):
     lenfor = len(alreadyDid)
     for i in range(0, lenfor, 2):
-        if (end<alreadyDid[i] or start>=alreadyDid[i+1]):
-            return start, end
-        elif (start<=alreadyDid[i] and alreadyDid[i]<end<alreadyDid[i+1]):
+        if (start<=alreadyDid[i] and alreadyDid[i]<end<alreadyDid[i+1]):
+            alreadyDid[i] = start
             return start, alreadyDid[i]
         elif (alreadyDid[i]<=start<=alreadyDid[i+1] and end>alreadyDid[i+1]):
+            alreadyDid[i+1] = end
             return alreadyDid[i+1], end
         elif (alreadyDid[i]<=start<=alreadyDid[i+1] and alreadyDid[i]<end<alreadyDid[i+1]):
             return -1, -1
         elif (start<=alreadyDid[i] and alreadyDid[i+1]<end):
+            alreadyDid[i] = start
+            alreadyDid[i+1] = end
             return (start, alreadyDid[i]), (alreadyDid[i+1], end)
+    alreadyDid.append(start)
+    alreadyDid.append(end)
     return start, end
 
 def convert(start, end, maps):
