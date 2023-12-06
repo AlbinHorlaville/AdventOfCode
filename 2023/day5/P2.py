@@ -1,4 +1,5 @@
 import numpy
+import time
 # modifier l'input et enlever les espaces dans les mots au
 file = open("2023/day5/input.txt", "r")
  
@@ -8,7 +9,11 @@ for i in range(len(maps)):
     maps[i] = maps[i].split("\n")
     for j in range(len(maps[i])):
         maps[i][j] = maps[i][j].split(" ")
-
+        for k in range(len(maps[i][j])):
+            try:
+                maps[i][j][k] = int(maps[i][j][k])
+            except:
+                print(i)
 def checkAlreadyDid(alreadyDid, n):
     for i in range(0, len(alreadyDid), 2):
         if alreadyDid[i]<=n<alreadyDid[i+1]:
@@ -32,8 +37,8 @@ def checkAlreadyDidInterval(alreadyDid, start, end):
 
 def convert(start, end, maps):
     min = -1
+    deb = time.time()
     for seed in range(start, end):
-        print(seed)
         movementS = seed
         # Si un nombre a déjà été soumis à l'algorithme, on ne lui soumet pas de nouveau
         #    if (not checkAlreadyDid(alreadyDid, movementS)):
@@ -52,6 +57,8 @@ def convert(start, end, maps):
                         break
         if min==-1 or movementS < min:
             min = movementS
+    fin = time.time()
+    print(fin - deb)
     return min
 
 alreadyDid = []
