@@ -83,19 +83,13 @@ for i in range(1, lenmapsforseed, 2):
         movementS = convert(start1, end1, maps)
         if minimum==-1 or movementS<minimum:
             minimum = movementS
-        alreadyDid.append(start1)
-        alreadyDid.append(end1)
         #intervale 2
         movementS = convert(start2, end2, maps)
         if minimum==-1 or movementS<minimum:
             minimum = movementS
-        alreadyDid.append(start2)
-        alreadyDid.append(end2)
     except:
         # Parcours de tous les intervalles de seeds
         movementS = convert(start, end, maps)
         if minimum==-1 or movementS<minimum:
             minimum = movementS
-        alreadyDid.append(start)
-        alreadyDid.append(end)
 print(minimum)
