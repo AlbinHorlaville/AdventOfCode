@@ -1,5 +1,15 @@
 {
     "files.associations": {
-        "stdio.h": "c"
+        "iosfwd": "cpp",
+        "string": "cpp",
+        "istream": "cpp",
+        "vector": "cpp",
+        "sstream": "cpp",
+        "ios": "cpp",
+        "__hash_table": "cpp",
+        "unordered_map": "cpp",
+        "iostream": "cpp",
+        "exception": "cpp",
+        "unordered_set": "cpp"
     }
 }
