@@ -11,12 +11,10 @@ using namespace std;
 
 struct Sommet{
     int value;
-    bool visited;
     vector<Sommet*> prochains;
 
     Sommet(int value){
         this->value = value;
-        this->visited = false;
     }
 
     bool isProchain(int n){
@@ -49,7 +47,7 @@ Sommet* findSommet(vector<Sommet*> *graphe, int value, unordered_set<int>& visit
     for (Sommet* sommet : *graphe) {
         // Vérifie si ce nœud a déjà été visité
         if (visited.find(sommet->value) != visited.end()) {
-            continue; // Passe au prochain sommet
+            continue;
         }
 
         // Marque ce nœud comme visité
@@ -88,22 +86,34 @@ void addToTheGraph(vector<Sommet*> *graphe, vector<int> prev_next){
     
     start->prochains.push_back(end);
 
+    if (graphe->size() == 1){
+        return;
+    }
+
+    bool endIsRacine = false;
     for (Sommet* sommet : *graphe){ // Si end se trouve à la racine on l'enlève
         if (sommet == end){
-            graphe->erase(find(graphe->begin(), graphe->end(), end));
+            endIsRacine = true;
         }
+    }
+    if (endIsRacine){
+        graphe->erase(find(graphe->begin(), graphe->end(), end));
     }
 }
 
-void afficher(Sommet* graphe) {
-    cout << graphe->value << " -> ";
-    for (Sommet* prochain : graphe->prochains) {
-        cout << prochain->value << " ";
+void afficher(Sommet* graphe, unordered_set<int>* visited, int level = 0) {
+    // Vérifier si le sommet a déjà été visité
+    if (visited->find(graphe->value) != visited->end()) {
+        return; // Éviter les cycles
     }
-    cout << "\n";
-    for (Sommet* prochain : graphe->prochains){
-        if (!prochain->prochains.empty())
-            afficher(prochain);
+    visited->insert(graphe->value);
+    for (int i = 0; i < level; i++) {
+        cout << "  ";
+    }
+    cout << graphe->value << "\n";
+
+    for (Sommet* prochain : graphe->prochains) {
+        afficher(prochain, visited, level + 1);
     }
 }
 
@@ -126,6 +136,7 @@ bool isValid(vector<Sommet*> *graphe, vector<int> sequence){
             }
         }
 
+        // Passer au prochain sommet
         bool find = false;
         for (Sommet* child : sommet->prochains){
             if (child->value == sequence[i+1]){
@@ -154,7 +165,9 @@ int main() {
 
     // Construire le graphe
     vector<Sommet*> graphe;
+    int i = 0;
     while(true){
+        i++;
         getline(MyReadFile, line);
         vector<int> prev_next = split(line, '|');
 
@@ -163,19 +176,16 @@ int main() {
         }
 
         addToTheGraph(&graphe, prev_next);
-        //cout << " ---- Graphe  ----\n";
-        //afficher(graphe[0]);
+    }
+    for (Sommet* sommet : graphe){
+        unordered_set<int> visited;
+        afficher(sommet, &visited);
     }
 
     while(!MyReadFile.eof()){
         getline(MyReadFile, line);
         vector<int> sequence = split(line, ',');
-        if (isValid(&graphe, sequence)){
-            // for (int val : sequence){
-            //     cout << val << " ";
-            // }
-            // cout << "\n";
-            
+        if (isValid(&graphe, sequence)){            
             result += sequence[sequence.size() / 2];
         }
     }
